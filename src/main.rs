@@ -9,6 +9,8 @@ use axum::{
 use axum::body::Body;
 use axum::extract::State;
 use axum::http::{Response, StatusCode};
+use rkyv::ser::Serializer;
+use rkyv::ser::serializers::AllocSerializer;
 use crate::product::Product;
 use crate::random_products::create_random_products;
 
@@ -27,6 +29,24 @@ async fn get_products_json(State(state): State<AppState>) -> impl IntoResponse {
         .unwrap()
 }
 
+async fn get_products_rkyv(State(state): State<AppState>) -> impl IntoResponse {
+    let products = state.products.clone();
+    let start_time = Instant::now();
+    let mut serializer = AllocSerializer::<4096>::default();
+    serializer.serialize_value(&products).unwrap();
+    let products_bytes = serializer.into_serializer().into_inner().to_vec();
+
+    let elapsed_time = start_time.elapsed();
+    println!("Time elapsed for serialization: {:?}", elapsed_time);
+
+    Response::builder()
+        .status(StatusCode::OK)
+        .header("Content-Type", "application/octet-stream")
+        .body(Body::from(products_bytes))
+        .unwrap()
+}
+
+
 #[derive(Clone)]
 struct AppState {
     pub products: Vec<Product>,
@@ -41,6 +61,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/json", get(get_products_json))
+        .route("/rkyv", get(get_products_rkyv))
         .with_state(app_state);
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())

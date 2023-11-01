@@ -1,9 +1,10 @@
 use chrono::{DateTime, Utc};
+use rkyv::{Archive, Serialize as RkyvSerialize};
 use uuid::Uuid;
 use strum_macros::EnumIter;
 use serde::Serialize;
 
-#[derive(EnumIter, Debug, Clone, Serialize)]
+#[derive(EnumIter, Debug, Clone, Serialize, Archive, RkyvSerialize)]
 pub enum ProductCategory {
     Electronics,
     Clothing,
@@ -12,7 +13,7 @@ pub enum ProductCategory {
     Toys,
 }
 
-#[derive(EnumIter, Debug, Clone, Serialize)]
+#[derive(EnumIter, Debug, Clone, Serialize, Archive, RkyvSerialize)]
 pub enum ProductCurrency {
     USD,
     GBP,
@@ -22,7 +23,7 @@ pub enum ProductCurrency {
     CAD,
 }
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Clone, Archive, RkyvSerialize)]
 pub struct ProductDimensions {
     length: f64,
     width: f64,
@@ -36,7 +37,7 @@ impl ProductDimensions {
 }
 
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Clone, Archive, RkyvSerialize)]
 pub struct Product {
     pub(crate) id: Uuid,
     pub(crate) name: String,
