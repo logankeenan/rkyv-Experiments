@@ -8,3 +8,11 @@ edition = "2021"
 [dependencies]
 axum = { version = "0.6.20", features = [] }
 tokio = { version = "1.33.0", features = ["full"] }
+uuid = { version = "1.5.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+fake = "2.9.1"
+rand = "0.8"
+strum = "0.25.0"
+strum_macros = "0.25.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
