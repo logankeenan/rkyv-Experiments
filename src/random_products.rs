@@ -13,7 +13,7 @@ pub fn create_random_products() -> Vec<Product> {
     let categories: Vec<_> = ProductCategory::iter().collect();
     let currencies: Vec<_> = ProductCurrency::iter().collect();
 
-    for _ in 0..100 {
+    for _ in 0..1000 {
         let name: String = faker::company::en::Buzzword().fake();
         let brand: String = faker::company::en::CompanyName().fake();
         let sku = format!("SKU{}", rng.gen_range(10000..99999));
